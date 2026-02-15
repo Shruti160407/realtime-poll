@@ -29,7 +29,7 @@ export default async function PollPage({ params }: PageProps) {
     <main className="max-w-xl mx-auto p-6">
       <h1 className="text-2xl font-bold mb-6">{poll.question}</h1>
 
-      <ShareButtons />
+      <ShareButtons pollId={poll.id}/>
 
 
       <VoteOptions pollId={poll.id} options={poll.options} />

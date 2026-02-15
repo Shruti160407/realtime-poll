@@ -2,10 +2,17 @@
 
 import { useState } from "react";
 
-export default function ShareButtons() {
+interface ShareButtonsProps {
+  pollId: string;
+}
+
+export default function ShareButtons({ pollId }: ShareButtonsProps) {
   const [copied, setCopied] = useState(false);
 
-  const pollUrl = typeof window !== "undefined" ? window.location.href : "";
+  const pollUrl =
+    typeof window !== "undefined"
+      ? `${window.location.origin}/poll/${pollId}`
+      : "";
 
   const handleCopy = async () => {
     await navigator.clipboard.writeText(pollUrl);
