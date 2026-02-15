@@ -136,18 +136,18 @@ Deployment: Vercel
 Running Locally
 
 Clone the repository:
-
+```
 git clone https://github.com/Shruti160407/realtime-poll.git
 cd realtime-poll
-
+```
 
 Install dependencies:
-
+```
 npm install
-
+```
 
 Create a .env.local file and add:
-
+```
 DATABASE_URL=
 PUSHER_APP_ID=
 PUSHER_KEY=
@@ -155,15 +155,15 @@ PUSHER_SECRET=
 PUSHER_CLUSTER=
 NEXT_PUBLIC_PUSHER_KEY=
 NEXT_PUBLIC_PUSHER_CLUSTER=
-
+```
 
 Generate Prisma client:
-
+```
 npx prisma generate
-
+```
 
 Run the development server:
-
+```
 npm run dev
-
+```
   
