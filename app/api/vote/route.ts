@@ -29,7 +29,7 @@ export async function POST(req: Request) {
       const now = Date.now();
       const timeDiff = now - lastVoteTime;
 
-      if (timeDiff < 5000) {
+      if (timeDiff < 2000) {
         return NextResponse.json(
           { error: "Please wait before changing vote again" },
           { status: 429 }
