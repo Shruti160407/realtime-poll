@@ -90,7 +90,7 @@ try {
 
       <button
         onClick={handleSubmit}
-        className="w-full bg-blue-600 p-3 rounded"
+        className="w-full bg-white-600 p-3 rounded"
         disabled={loading}
       >
         {loading ? "Creating..." : "Create Poll"}
