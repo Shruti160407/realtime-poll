@@ -61,13 +61,13 @@ A composite unique constraint is applied in the Prisma schema:
 ```prisma
 @@unique([pollId, voterId])
 ```
-##  1. Rate Limiting (2-Second Cooldown for Vote Switching)
+##  2. Rate Limiting (2-Second Cooldown for Vote Switching)
 
 Users are allowed to change their vote
 A 2-second cooldown is enforced between vote changes.
 
 
-Edge Cases Handled
+## Edge Cases Handled
 
 The application handles the following scenarios:
 
@@ -85,7 +85,7 @@ The application handles the following scenarios:
 
 ✅ Simultaneous users (real-time sync works correctly)
 
-Known Limitations
+## Known Limitations
 
 Voter identity is based on a generated voterId stored in localStorage.
 
@@ -107,9 +107,10 @@ JWT-based authentication
 
 No poll expiration feature.
 
-Future improvement: add poll start/end time.
+## Future improvement: 
+add poll start/end time.
 
-Persistence
+## Persistence
 
 Polls and votes are stored in PostgreSQL (Neon).
 
@@ -119,7 +120,7 @@ Share links remain valid over time.
 
 Data persists across sessions.
 
-⚙️ Tech Stack
+## Tech Stack
 
 Frontend: Next.js 16 (App Router)
 
