@@ -26,7 +26,7 @@ export async function POST(req: Request) {
       },
     });
 
-    // ✅ VERY IMPORTANT
+    //  VERY IMPORTANT
     return NextResponse.json(poll);
 
   } catch (error) {

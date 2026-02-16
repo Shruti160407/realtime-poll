@@ -55,7 +55,7 @@ export default function VoteOptions({
     localStorage.setItem("voterId", voterId);
   }
 
-  // 🔥 Optimistic update (instant UI)
+  //  Optimistic update (instant UI)
   setLocalOptions((prev) =>
     prev.map((option) =>
       option.id === optionId
