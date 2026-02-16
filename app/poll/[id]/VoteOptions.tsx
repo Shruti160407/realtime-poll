@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { pusherClient } from "@/lib/pusherClient";
-import { v4 as uuidv4 } from "uuid";
+//import { v4 as uuidv4 } from "uuid";
 
 export default function VoteOptions({
   pollId,
@@ -18,6 +18,8 @@ export default function VoteOptions({
   const [localOptions, setLocalOptions] = useState(options);
   const [loading, setLoading] = useState(false);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
+  const [voterId, setVoterId] = useState<string | null>(null);
+
 
   //  Load previously selected option from localStorage
   useEffect(() => {
@@ -26,6 +28,18 @@ export default function VoteOptions({
       setSelectedOption(saved);
     }
   }, [pollId]);
+
+  useEffect(() => {
+  let id = localStorage.getItem("voterId");
+
+  if (!id) {
+    id = crypto.randomUUID();
+    localStorage.setItem("voterId", id);
+  }
+
+  setVoterId(id);
+}, []);
+
 
   //  Subscribe to Pusher updates
   useEffect(() => {
@@ -51,10 +65,10 @@ export default function VoteOptions({
 
   let voterId = localStorage.getItem("voterId");
 
-  if (!voterId) {
+  /*if (!voterId) {
     voterId = Math.random().toString(36).substring(2) + Date.now();
     localStorage.setItem("voterId", voterId);
-  }
+  }*/
 
   //  Optimistic update (instant UI)
   setLocalOptions((prev) =>
