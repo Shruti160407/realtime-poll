@@ -52,7 +52,7 @@ export default function VoteOptions({
   let voterId = localStorage.getItem("voterId");
 
   if (!voterId) {
-    voterId = uuidv4();
+    voterId = Math.random().toString(36).substring(2) + Date.now();
     localStorage.setItem("voterId", voterId);
   }
 
