@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { pusherClient } from "@/lib/pusherClient";
+import { getPusherClient } from "@/lib/pusherClient";
 //import { v4 as uuidv4 } from "uuid";
 
 export default function VoteOptions({
@@ -23,11 +23,16 @@ export default function VoteOptions({
 
   //  Load previously selected option from localStorage
   useEffect(() => {
-    const saved = localStorage.getItem(`voted-${pollId}`);
-    if (saved) {
-      setSelectedOption(saved);
-    }
-  }, [pollId]);
+  if (typeof window !== "undefined") {
+    try {
+      const saved = window.localStorage.getItem(`voted-${pollId}`);
+      if (saved) {
+        setSelectedOption(saved);
+      }
+    } catch {}
+  }
+}, [pollId]);
+
 
   useEffect(() => {
   let id = localStorage.getItem("voterId");
@@ -43,34 +48,45 @@ export default function VoteOptions({
 
   //  Subscribe to Pusher updates
   useEffect(() => {
-    const channel = pusherClient.subscribe(`poll-${pollId}`);
+  const client = getPusherClient();
+  if (!client) return;
 
-    channel.bind(
-      "vote-updated",
-      (data: {
-        options: { id: string; text: string; votes: { id: string }[] }[];
-      }) => {
-        setLocalOptions(data.options);
-      }
-    );
+  const channel = client.subscribe(`poll-${pollId}`);
 
-    return () => {
-      pusherClient.unsubscribe(`poll-${pollId}`);
-    };
-  }, [pollId]);
+  channel.bind("vote-updated", (data: any) => {
+    setLocalOptions(data.options);
+  });
 
-    const handleVote = async (optionId: string) => {
+  return () => {
+    client.unsubscribe(`poll-${pollId}`);
+  };
+}, [pollId]);
+
+
+const handleVote = async (optionId: string) => {
   if (loading) return;
   setLoading(true);
 
-  let voterId = localStorage.getItem("voterId");
+  let voterId: string | null = null;
 
-  /*if (!voterId) {
-    voterId = Math.random().toString(36).substring(2) + Date.now();
-    localStorage.setItem("voterId", voterId);
-  }*/
+  if (typeof window !== "undefined") {
+    try {
+      voterId = window.localStorage.getItem("voterId");
+    } catch {}
+  }
 
-  //  Optimistic update (instant UI)
+  if (!voterId) {
+    voterId =
+      Date.now().toString() +
+      "-" +
+      Math.floor(Math.random() * 1000000).toString();
+
+    try {
+      window.localStorage.setItem("voterId", voterId);
+    } catch {}
+  }
+
+  // Optimistic update
   setLocalOptions((prev) =>
     prev.map((option) =>
       option.id === optionId
@@ -90,11 +106,14 @@ export default function VoteOptions({
     return;
   }
 
-  localStorage.setItem(`voted-${pollId}`, optionId);
-  setSelectedOption(optionId);
+  try {
+    window.localStorage.setItem(`voted-${pollId}`, optionId);
+  } catch {}
 
+  setSelectedOption(optionId);
   setLoading(false);
 };
+
 
 
   return (
