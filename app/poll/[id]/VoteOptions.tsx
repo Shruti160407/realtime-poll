@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { pusherClient } from "@/lib/pusherClient";
+import { v4 as uuidv4 } from "uuid";
 
 export default function VoteOptions({
   pollId,
@@ -51,7 +52,7 @@ export default function VoteOptions({
   let voterId = localStorage.getItem("voterId");
 
   if (!voterId) {
-    voterId = crypto.randomUUID();
+    voterId = uuidv4();
     localStorage.setItem("voterId", voterId);
   }
 
