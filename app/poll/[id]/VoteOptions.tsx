@@ -18,7 +18,7 @@ export default function VoteOptions({
   const [loading, setLoading] = useState(false);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
 
-  // 🔹 Load previously selected option from localStorage
+  //  Load previously selected option from localStorage
   useEffect(() => {
     const saved = localStorage.getItem(`voted-${pollId}`);
     if (saved) {
@@ -26,7 +26,7 @@ export default function VoteOptions({
     }
   }, [pollId]);
 
-  // 🔹 Subscribe to Pusher updates
+  //  Subscribe to Pusher updates
   useEffect(() => {
     const channel = pusherClient.subscribe(`poll-${pollId}`);
 
@@ -44,43 +44,43 @@ export default function VoteOptions({
     };
   }, [pollId]);
 
-  const handleVote = async (optionId: string) => {
-    if (loading) return;
+    const handleVote = async (optionId: string) => {
+  if (loading) return;
+  setLoading(true);
 
-    setLoading(true);
+  let voterId = localStorage.getItem("voterId");
 
-    // 🔹 Get or create voterId
-    let voterId = localStorage.getItem("voterId");
+  if (!voterId) {
+    voterId = crypto.randomUUID();
+    localStorage.setItem("voterId", voterId);
+  }
 
-    if (!voterId) {
-      voterId = crypto.randomUUID();
-      localStorage.setItem("voterId", voterId);
-    }
+  // 🔥 Optimistic update (instant UI)
+  setLocalOptions((prev) =>
+    prev.map((option) =>
+      option.id === optionId
+        ? { ...option, votes: [...option.votes, { id: "optimistic" }] }
+        : option
+    )
+  );
 
-    const res = await fetch("/api/vote", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        pollId,
-        optionId,
-        voterId,
-      }),
-    });
+  const res = await fetch("/api/vote", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ pollId, optionId, voterId }),
+  });
 
-    const data = await res.json();
-
-    if (!res.ok) {
-      alert(data.error);
-      setLoading(false);
-      return;
-    }
-
-    // 🔹 Save selected option locally
-    localStorage.setItem(`voted-${pollId}`, optionId);
-    setSelectedOption(optionId);
-
+  if (!res.ok) {
     setLoading(false);
-  };
+    return;
+  }
+
+  localStorage.setItem(`voted-${pollId}`, optionId);
+  setSelectedOption(optionId);
+
+  setLoading(false);
+};
+
 
   return (
     <ul className="space-y-4">
